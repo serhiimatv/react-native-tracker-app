@@ -1,45 +1,39 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import { StatusBar, useColorScheme } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import ManageExpense from './screens/ManageExpense';
+import AllExpenses from './screens/AllExpenses';
+import RecentExpenses from './screens/RecentExpenses';
 
-function App() {
+const Stack = createNativeStackNavigator();
+const BottomTabs = createBottomTabNavigator();
+
+const ExpensesOverview = () => {
+  return (
+    <BottomTabs.Navigator>
+      <BottomTabs.Screen name="RecentExpenses" component={RecentExpenses} />
+      <BottomTabs.Screen name="AllExpenses" component={AllExpenses} />
+    </BottomTabs.Navigator>
+  );
+}
+
+const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <SafeAreaProvider>
+    <>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
+
+      <NavigationContainer >
+        <Stack.Navigator>
+          <Stack.Screen name="ExpensesOverview" component={ExpensesOverview} />
+          <Stack.Screen name="ManageExpense" component={ManageExpense} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
