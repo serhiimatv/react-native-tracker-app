@@ -25,10 +25,9 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-
-      <NavigationContainer >
+      <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="ExpensesOverview" component={ExpensesOverview} />
+          <Stack.Screen name="ExpensesOverview" component={ExpensesOverview} options={{ headerShown: false, contentStyle: { backgroundColor: isDarkMode ? '#311b6b' : '#f4f4f4' } }} />
           <Stack.Screen name="ManageExpense" component={ManageExpense} />
         </Stack.Navigator>
       </NavigationContainer>
