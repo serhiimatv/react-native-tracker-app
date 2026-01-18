@@ -4,6 +4,9 @@ import { GlobalStyles } from '../constants/styles';
 import RecentExpenses from '../screens/RecentExpenses';
 import AllExpenses from '../screens/AllExpenses';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import IconButton from '../components/UI/IconButton';
+import { useCallback } from 'react';
+import { HeaderOptions } from '@react-navigation/elements';
 
 const BottomTabs = createBottomTabNavigator();
 
@@ -14,6 +17,19 @@ const getTabBarIcon = (name: keyof typeof glyphMap) => {
 };
 
 const TabsNavigator = () => {
+  const getHeaderRight = useCallback<
+    Exclude<HeaderOptions['headerRight'], undefined>
+  >(({ tintColor }) => {
+    return (
+      <IconButton
+        icon="add"
+        size={24}
+        color={tintColor ?? 'white'}
+        onPress={() => {}}
+      />
+    );
+  }, []);
+
   return (
     <BottomTabs.Navigator
       screenOptions={{
@@ -21,6 +37,7 @@ const TabsNavigator = () => {
         headerTintColor: 'white',
         tabBarStyle: { backgroundColor: GlobalStyles.colors.primary500 },
         tabBarActiveTintColor: GlobalStyles.colors.accent500,
+        headerRight: getHeaderRight,
       }}
     >
       <BottomTabs.Screen
