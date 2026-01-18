@@ -4,10 +4,11 @@ import {
   AppNavigation,
   AppNavigationParamList,
 } from '../hooks/useAppNavigation';
-import { useLayoutEffect } from 'react';
+import { useContext, useLayoutEffect } from 'react';
 import IconButton from '../components/UI/IconButton';
 import { GlobalStyles } from '../constants/styles';
 import Button from '../components/UI/Button';
+import { ExpensesContext } from '../store/expenses-context';
 
 const ManageExpense = ({
   route,
@@ -16,11 +17,16 @@ const ManageExpense = ({
   route?: RouteProp<AppNavigationParamList, 'ManageExpense'>;
   navigation?: AppNavigation;
 }) => {
+  const { addExpense, updateExpense, deleteExpense } =
+    useContext(ExpensesContext);
+
   const editedExpenseId = route?.params?.expenseId;
   const isEditing = !!editedExpenseId;
 
   const deleteExpenseHandler = () => {
-    console.log('delete expense');
+    if (editedExpenseId) {
+      deleteExpense(editedExpenseId);
+    }
     navigation?.goBack();
   };
 
@@ -29,7 +35,19 @@ const ManageExpense = ({
   };
 
   const confirmHandler = () => {
-    console.log('confirm');
+    if (isEditing) {
+      updateExpense(editedExpenseId, {
+        description: 'test description updated',
+        amount: 26.99,
+        date: new Date('2026-01-17'),
+      });
+    } else {
+      addExpense({
+        description: 'test description',
+        amount: 19.99,
+        date: new Date(),
+      });
+    }
     navigation?.goBack();
   };
 
