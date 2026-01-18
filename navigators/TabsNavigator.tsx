@@ -1,11 +1,17 @@
 import Ionicons from '@react-native-vector-icons/ionicons';
-
+import glyphMap from '@react-native-vector-icons/ionicons/glyphmaps/Ionicons.json';
 import { GlobalStyles } from '../constants/styles';
 import RecentExpenses from '../screens/RecentExpenses';
 import AllExpenses from '../screens/AllExpenses';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const BottomTabs = createBottomTabNavigator();
+
+const getTabBarIcon = (name: keyof typeof glyphMap) => {
+  return ({ color, size }: { color: string; size: number }) => (
+    <Ionicons name={name} color={color} size={size} />
+  );
+};
 
 const TabsNavigator = () => {
   return (
@@ -23,10 +29,7 @@ const TabsNavigator = () => {
         options={{
           title: 'Recent Expenses',
           tabBarLabel: 'Recent',
-          // eslint-disable-next-line react/no-unstable-nested-components
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="hourglass" color={color} size={size} />
-          ),
+          tabBarIcon: getTabBarIcon('hourglass'),
         }}
       />
       <BottomTabs.Screen
@@ -35,10 +38,7 @@ const TabsNavigator = () => {
         options={{
           title: 'All Expenses',
           tabBarLabel: 'All Expenses',
-          // eslint-disable-next-line react/no-unstable-nested-components
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" color={color} size={size} />
-          ),
+          tabBarIcon: getTabBarIcon('calendar'),
         }}
       />
     </BottomTabs.Navigator>
