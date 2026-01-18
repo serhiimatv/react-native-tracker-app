@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import IconButton from '../components/UI/IconButton';
 import { useCallback } from 'react';
 import { HeaderOptions } from '@react-navigation/elements';
+import useAppNavigation from '../hooks/useAppNavigation';
 
 const BottomTabs = createBottomTabNavigator();
 
@@ -17,18 +18,26 @@ const getTabBarIcon = (name: keyof typeof glyphMap) => {
 };
 
 const TabsNavigator = () => {
+  const navigation = useAppNavigation();
+
   const getHeaderRight = useCallback<
     Exclude<HeaderOptions['headerRight'], undefined>
-  >(({ tintColor }) => {
-    return (
-      <IconButton
-        icon="add"
-        size={24}
-        color={tintColor ?? 'white'}
-        onPress={() => {}}
-      />
-    );
-  }, []);
+  >(
+    ({ tintColor }) => {
+      const manageExpensePressHandler = () => {
+        navigation.navigate('ManageExpense');
+      };
+      return (
+        <IconButton
+          icon="add"
+          size={24}
+          color={tintColor ?? 'white'}
+          onPress={manageExpensePressHandler}
+        />
+      );
+    },
+    [navigation],
+  );
 
   return (
     <BottomTabs.Navigator
