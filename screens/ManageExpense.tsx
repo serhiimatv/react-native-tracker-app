@@ -21,6 +21,7 @@ const ManageExpense = ({
 
   const deleteExpenseHandler = () => {
     console.log('delete expense');
+    navigation?.goBack();
   };
 
   const cancelHandler = () => {
@@ -29,6 +30,7 @@ const ManageExpense = ({
 
   const confirmHandler = () => {
     console.log('confirm');
+    navigation?.goBack();
   };
 
   useLayoutEffect(() => {
