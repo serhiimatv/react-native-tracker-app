@@ -1,12 +1,12 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 
-type AppNavigationParamList = {
-  ManageExpense: undefined;
+export type AppNavigationParamList = {
+  ManageExpense: { expenseId: string } | undefined;
   RecentExpenses: undefined;
   AllExpenses: undefined;
 };
 
-type AppNavigation = NavigationProp<AppNavigationParamList>;
+export type AppNavigation = NavigationProp<AppNavigationParamList>;
 
 const useAppNavigation = () => {
   return useNavigation<AppNavigation>();

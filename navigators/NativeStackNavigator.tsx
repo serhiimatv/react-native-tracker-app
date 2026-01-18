@@ -2,12 +2,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import TabsNavigator from './TabsNavigator';
 import ManageExpense from '../screens/ManageExpense';
+import { GlobalStyles } from '../constants/styles';
 
 const Stack = createNativeStackNavigator();
 
 const NativeStackNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: GlobalStyles.colors.primary500 },
+        headerTintColor: 'white',
+      }}
+    >
       <Stack.Screen
         name="ExpensesOverview"
         component={TabsNavigator}
@@ -15,7 +21,13 @@ const NativeStackNavigator = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="ManageExpense" component={ManageExpense} />
+      <Stack.Screen
+        name="ManageExpense"
+        component={ManageExpense}
+        options={{
+          presentation: 'modal',
+        }}
+      />
     </Stack.Navigator>
   );
 };

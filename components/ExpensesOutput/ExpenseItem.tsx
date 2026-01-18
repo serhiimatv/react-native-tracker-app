@@ -6,11 +6,13 @@ import { GlobalStyles } from '../../constants/styles';
 import { getFormattedDate } from '../../util/date';
 import useAppNavigation from '../../hooks/useAppNavigation';
 
-const ExpenseItem = ({ description, amount, date }: Expense) => {
+const ExpenseItem = ({ id, description, amount, date }: Expense) => {
   const navigation = useAppNavigation();
 
   const expensePressHandler = () => {
-    navigation.navigate('ManageExpense');
+    navigation.navigate('ManageExpense', {
+      expenseId: id,
+    });
   };
   return (
     <Pressable
