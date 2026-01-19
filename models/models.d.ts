@@ -6,3 +6,7 @@ export interface Expense {
 }
 
 export type NewExpense = Omit<Expense, 'id'>;
+
+export type InputValues = {
+  [key in keyof NewExpense]: string;
+};

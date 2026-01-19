@@ -3,7 +3,8 @@ import Input from './Input';
 import { useState } from 'react';
 
 import Button from '../UI/Button';
-import { NewExpense } from '../../models/models';
+import { Expense, NewExpense } from '../../models/models';
+import { getFormattedDate } from '../../util/date';
 
 const inputValuesKeys = {
   amount: 'amount',
@@ -15,15 +16,19 @@ const ExpenseForm = ({
   submitButtonLabel,
   onCancel,
   onSubmit,
+  defaultValues,
 }: {
   submitButtonLabel: string;
   onCancel: () => void;
   onSubmit: (expenseData: NewExpense) => void;
+  defaultValues?: Expense;
 }) => {
   const [inputValues, setInputValues] = useState({
-    [inputValuesKeys.amount]: '',
-    [inputValuesKeys.date]: '',
-    [inputValuesKeys.description]: '',
+    [inputValuesKeys.amount]: defaultValues?.amount.toString() ?? '',
+    [inputValuesKeys.date]: defaultValues
+      ? getFormattedDate(defaultValues.date)
+      : '',
+    [inputValuesKeys.description]: defaultValues?.description ?? '',
   });
 
   const inputsChangeHandler = (

@@ -81,7 +81,7 @@ const DUMMY_EXPENSES: Expense[] = [
     id: uuidv4(),
     description: 'Some bananas',
     amount: 5.99,
-    date: new Date('2026-01-12'),
+    date: new Date('2026-01-13'),
   },
   {
     id: uuidv4(),

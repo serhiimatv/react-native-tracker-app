@@ -4,7 +4,7 @@ import {
   AppNavigation,
   AppNavigationParamList,
 } from '../hooks/useAppNavigation';
-import { useContext, useLayoutEffect } from 'react';
+import { useContext, useLayoutEffect, useMemo } from 'react';
 import IconButton from '../components/UI/IconButton';
 import { GlobalStyles } from '../constants/styles';
 import { ExpensesContext } from '../store/expenses-context';
@@ -18,11 +18,18 @@ const ManageExpense = ({
   route?: RouteProp<AppNavigationParamList, 'ManageExpense'>;
   navigation?: AppNavigation;
 }) => {
-  const { addExpense, updateExpense, deleteExpense } =
+  const { expenses, addExpense, updateExpense, deleteExpense } =
     useContext(ExpensesContext);
 
   const editedExpenseId = route?.params?.expenseId;
   const isEditing = !!editedExpenseId;
+
+  const selectedExpense = useMemo(() => {
+    const foundExpense = expenses.find(
+      expense => expense.id === editedExpenseId,
+    );
+    return foundExpense;
+  }, [expenses, editedExpenseId]);
 
   const deleteExpenseHandler = () => {
     if (editedExpenseId) {
@@ -52,6 +59,7 @@ const ManageExpense = ({
   return (
     <View style={styles.container}>
       <ExpenseForm
+        defaultValues={selectedExpense}
         submitButtonLabel={isEditing ? 'Update' : 'Add'}
         onCancel={cancelHandler}
         onSubmit={submitHandler}
