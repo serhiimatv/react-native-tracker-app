@@ -1,13 +1,13 @@
 import { createContext, useReducer } from 'react';
-import { Expense } from '../models/models';
+import { Expense, NewExpense } from '../models/models';
 import uuid from 'react-native-uuid';
 
 const uuidv4 = uuid.v4;
 
 interface ExpensesContextType {
   expenses: Expense[];
-  addExpense: (expense: Omit<Expense, 'id'>) => void;
-  updateExpense: (id: string, expense: Omit<Expense, 'id'>) => void;
+  addExpense: (expense: NewExpense) => void;
+  updateExpense: (id: string, expense: NewExpense) => void;
   deleteExpense: (id: string) => void;
 }
 
@@ -20,7 +20,7 @@ enum ExpensesActionType {
 interface ExpensesAction {
   type: ExpensesActionType;
   payload: {
-    expense?: Omit<Expense, 'id'>;
+    expense?: NewExpense;
     id?: string;
   };
 }
@@ -131,7 +131,7 @@ const ExpensesContextProvider = ({
     DUMMY_EXPENSES,
   );
 
-  const addExpense = (expense: Omit<Expense, 'id'>) => {
+  const addExpense = (expense: NewExpense) => {
     expensesDispatch({ type: ExpensesActionType.ADD, payload: { expense } });
   };
 
@@ -139,7 +139,7 @@ const ExpensesContextProvider = ({
     expensesDispatch({ type: ExpensesActionType.DELETE, payload: { id } });
   };
 
-  const updateExpense = (id: string, expense: Omit<Expense, 'id'>) => {
+  const updateExpense = (id: string, expense: NewExpense) => {
     expensesDispatch({
       type: ExpensesActionType.UPDATE,
       payload: { id, expense },

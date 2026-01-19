@@ -7,9 +7,9 @@ import {
 import { useContext, useLayoutEffect } from 'react';
 import IconButton from '../components/UI/IconButton';
 import { GlobalStyles } from '../constants/styles';
-import Button from '../components/UI/Button';
 import { ExpensesContext } from '../store/expenses-context';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
+import { NewExpense } from '../models/models';
 
 const ManageExpense = ({
   route,
@@ -35,19 +35,11 @@ const ManageExpense = ({
     navigation?.goBack();
   };
 
-  const confirmHandler = () => {
+  const submitHandler = (expenseData: NewExpense) => {
     if (isEditing) {
-      updateExpense(editedExpenseId, {
-        description: 'test description updated',
-        amount: 26.99,
-        date: new Date('2026-01-17'),
-      });
+      updateExpense(editedExpenseId, expenseData);
     } else {
-      addExpense({
-        description: 'test description',
-        amount: 19.99,
-        date: new Date(),
-      });
+      addExpense(expenseData);
     }
     navigation?.goBack();
   };
@@ -59,15 +51,11 @@ const ManageExpense = ({
   }, [isEditing, navigation]);
   return (
     <View style={styles.container}>
-      <ExpenseForm />
-      <View style={styles.buttonsContainer}>
-        <Button mode="flat" style={styles.button} onPress={cancelHandler}>
-          Cancel
-        </Button>
-        <Button style={styles.button} onPress={confirmHandler}>
-          {isEditing ? 'Update' : 'Add'}
-        </Button>
-      </View>
+      <ExpenseForm
+        submitButtonLabel={isEditing ? 'Update' : 'Add'}
+        onCancel={cancelHandler}
+        onSubmit={submitHandler}
+      />
       {isEditing && (
         <View style={styles.deleteIconContainer}>
           <IconButton
@@ -89,15 +77,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
   deleteIconContainer: {
     marginTop: 16,

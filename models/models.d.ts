@@ -4,3 +4,5 @@ export interface Expense {
   amount: number;
   date: Date;
 }
+
+export type NewExpense = Omit<Expense, 'id'>;
