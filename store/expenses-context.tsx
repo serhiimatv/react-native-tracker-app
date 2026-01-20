@@ -1,13 +1,11 @@
 import { createContext, useReducer } from 'react';
-import { Expense, NewExpense } from '../models/models';
-import uuid from 'react-native-uuid';
-
-const uuidv4 = uuid.v4;
+import { Expense } from '../models/models';
+// import uuid from 'react-native-uuid';
 
 interface ExpensesContextType {
   expenses: Expense[];
-  addExpense: (expense: NewExpense) => void;
-  updateExpense: (id: string, expense: NewExpense) => void;
+  addExpense: (expense: Expense) => void;
+  updateExpense: (id: string, expense: Expense) => void;
   deleteExpense: (id: string) => void;
   setExpenses: (expenses: Expense[]) => void;
 }
@@ -22,7 +20,7 @@ enum ExpensesActionType {
 interface ExpensesAction {
   type: ExpensesActionType;
   payload: {
-    expense?: NewExpense;
+    expense?: Expense;
     id?: string;
     expenses?: Expense[];
   };
@@ -46,7 +44,7 @@ const expensesReducer = (
         ? action.payload.expense
         : null;
       if (newExpense) {
-        return [...state, { ...newExpense, id: uuidv4() }];
+        return [...state, newExpense];
       }
       return state;
     case 'UPDATE':
@@ -64,7 +62,8 @@ const expensesReducer = (
     case 'DELETE':
       return state.filter(expense => expense.id !== action.payload.id);
     case 'SET':
-      return action.payload?.expenses ?? [];
+      const revertedExpenses = action.payload?.expenses?.reverse();
+      return revertedExpenses ?? [];
     default:
       return state;
   }
@@ -75,12 +74,9 @@ const ExpensesContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [expensesState, expensesDispatch] = useReducer(
-    expensesReducer,
-    [],
-  );
+  const [expensesState, expensesDispatch] = useReducer(expensesReducer, []);
 
-  const addExpense = (expense: NewExpense) => {
+  const addExpense = (expense: Expense) => {
     expensesDispatch({ type: ExpensesActionType.ADD, payload: { expense } });
   };
 
@@ -88,7 +84,7 @@ const ExpensesContextProvider = ({
     expensesDispatch({ type: ExpensesActionType.DELETE, payload: { id } });
   };
 
-  const updateExpense = (id: string, expense: NewExpense) => {
+  const updateExpense = (id: string, expense: Expense) => {
     expensesDispatch({
       type: ExpensesActionType.UPDATE,
       payload: { id, expense },

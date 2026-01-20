@@ -19,7 +19,7 @@ const RecentExpenses = () => {
     const getExpenses = async () => {
       const fetchedExpenses = await fetchExpenses();
       setExpenses(fetchedExpenses);
-    }
+    };
     getExpenses();
   }, [setExpenses]);
 

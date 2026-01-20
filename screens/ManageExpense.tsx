@@ -10,7 +10,11 @@ import { GlobalStyles } from '../constants/styles';
 import { ExpensesContext } from '../store/expenses-context';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import { NewExpense } from '../models/models';
-import { storeExpense } from '../util/http';
+import {
+  storeExpense,
+  updateExpense as updateExpenseHttp,
+  deleteExpense as deleteExpenseHttp,
+} from '../util/http';
 
 const ManageExpense = ({
   route,
@@ -32,8 +36,9 @@ const ManageExpense = ({
     return foundExpense;
   }, [expenses, editedExpenseId]);
 
-  const deleteExpenseHandler = () => {
+  const deleteExpenseHandler = async () => {
     if (editedExpenseId) {
+      await deleteExpenseHttp(editedExpenseId);
       deleteExpense(editedExpenseId);
     }
     navigation?.goBack();
@@ -43,12 +48,13 @@ const ManageExpense = ({
     navigation?.goBack();
   };
 
-  const submitHandler = (expenseData: NewExpense) => {
+  const submitHandler = async (expenseData: NewExpense) => {
     if (isEditing) {
-      updateExpense(editedExpenseId, expenseData);
+      updateExpense(editedExpenseId, { ...expenseData, id: editedExpenseId });
+      await updateExpenseHttp(editedExpenseId, expenseData);
     } else {
-      storeExpense(expenseData);
-      addExpense(expenseData);
+      const id = await storeExpense(expenseData);
+      addExpense({ ...expenseData, id });
     }
     navigation?.goBack();
   };
