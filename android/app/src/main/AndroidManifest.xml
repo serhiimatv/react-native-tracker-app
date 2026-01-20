@@ -12,6 +12,7 @@
     android:usesCleartextTraffic="${usesCleartextTraffic}"
     android:supportsRtl="true"
     android:enableOnBackInvokedCallback="false"
+    android:screenOrientation="portrait"
   >
     <activity
       android:name=".MainActivity"
