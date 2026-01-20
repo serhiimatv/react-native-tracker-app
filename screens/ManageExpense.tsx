@@ -10,6 +10,7 @@ import { GlobalStyles } from '../constants/styles';
 import { ExpensesContext } from '../store/expenses-context';
 import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import { NewExpense } from '../models/models';
+import { storeExpense } from '../util/http';
 
 const ManageExpense = ({
   route,
@@ -46,6 +47,7 @@ const ManageExpense = ({
     if (isEditing) {
       updateExpense(editedExpenseId, expenseData);
     } else {
+      storeExpense(expenseData);
       addExpense(expenseData);
     }
     navigation?.goBack();

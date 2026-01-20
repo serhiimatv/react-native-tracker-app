@@ -9,12 +9,14 @@ interface ExpensesContextType {
   addExpense: (expense: NewExpense) => void;
   updateExpense: (id: string, expense: NewExpense) => void;
   deleteExpense: (id: string) => void;
+  setExpenses: (expenses: Expense[]) => void;
 }
 
 enum ExpensesActionType {
   ADD = 'ADD',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
+  SET = 'SET',
 }
 
 interface ExpensesAction {
@@ -22,6 +24,7 @@ interface ExpensesAction {
   payload: {
     expense?: NewExpense;
     id?: string;
+    expenses?: Expense[];
   };
 }
 
@@ -30,6 +33,7 @@ export const ExpensesContext = createContext<ExpensesContextType>({
   addExpense: () => {},
   updateExpense: () => {},
   deleteExpense: () => {},
+  setExpenses: () => {},
 });
 
 const expensesReducer = (
@@ -59,67 +63,12 @@ const expensesReducer = (
       return state;
     case 'DELETE':
       return state.filter(expense => expense.id !== action.payload.id);
+    case 'SET':
+      return action.payload?.expenses ?? [];
     default:
       return state;
   }
 };
-
-const DUMMY_EXPENSES: Expense[] = [
-  {
-    id: uuidv4(),
-    description: 'A pair of shoes',
-    amount: 59.99,
-    date: new Date('2021-12-19'),
-  },
-  {
-    id: uuidv4(),
-    description: 'A pair of trousers',
-    amount: 89.99,
-    date: new Date('2026-01-14'),
-  },
-  {
-    id: uuidv4(),
-    description: 'Some bananas',
-    amount: 5.99,
-    date: new Date('2026-01-13'),
-  },
-  {
-    id: uuidv4(),
-    description: 'A book',
-    amount: 14.99,
-    date: new Date('2022-02-19'),
-  },
-  {
-    id: uuidv4(),
-    description: 'Another book',
-    amount: 25.99,
-    date: new Date('2022-02-18'),
-  },
-  {
-    id: uuidv4(),
-    description: 'A book',
-    amount: 14.99,
-    date: new Date('2022-02-19'),
-  },
-  {
-    id: uuidv4(),
-    description: 'A book',
-    amount: 14.99,
-    date: new Date('2022-02-19'),
-  },
-  {
-    id: uuidv4(),
-    description: 'A book',
-    amount: 14.99,
-    date: new Date('2022-02-19'),
-  },
-  {
-    id: uuidv4(),
-    description: 'A book',
-    amount: 14.99,
-    date: new Date('2026-01-12'),
-  },
-];
 
 const ExpensesContextProvider = ({
   children,
@@ -128,7 +77,7 @@ const ExpensesContextProvider = ({
 }) => {
   const [expensesState, expensesDispatch] = useReducer(
     expensesReducer,
-    DUMMY_EXPENSES,
+    [],
   );
 
   const addExpense = (expense: NewExpense) => {
@@ -146,11 +95,16 @@ const ExpensesContextProvider = ({
     });
   };
 
+  const setExpenses = (expenses: Expense[]) => {
+    expensesDispatch({ type: ExpensesActionType.SET, payload: { expenses } });
+  };
+
   const value = {
     expenses: expensesState,
     addExpense,
     updateExpense,
     deleteExpense,
+    setExpenses,
   };
 
   return (
