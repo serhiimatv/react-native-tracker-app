@@ -1,6 +1,7 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 
 import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
+import ErrorOverlay from '../components/UI/ErrorOverlay';
 import LoadingOverlay from '../components/UI/LoadingOverlay';
 import { ExpensesContext } from '../store/expenses-context';
 import { getDateMinusDays } from '../util/date';
@@ -8,7 +9,12 @@ import { fetchExpenses } from '../util/http';
 
 const RecentExpenses = () => {
   const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { expenses, setExpenses } = useContext(ExpensesContext);
+
+  const errorHandler = () => {
+    setError(null);
+  };
 
   const recentExpenses = useMemo(() => {
     return expenses.filter(expense => {
@@ -21,13 +27,21 @@ const RecentExpenses = () => {
   useEffect(() => {
     const getExpenses = async () => {
       setIsFetching(true);
-      const fetchedExpenses = await fetchExpenses();
-      setIsFetching(false);
-      setExpenses(fetchedExpenses);
+      try {
+        const fetchedExpenses = await fetchExpenses();
+        setExpenses(fetchedExpenses);
+      } catch (_error) {
+        setError('Could not fetch expenses!');
+      } finally {
+        setIsFetching(false);
+      }
     };
     getExpenses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (error && !isFetching) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
+  }
 
   if (isFetching) {
     return <LoadingOverlay />;

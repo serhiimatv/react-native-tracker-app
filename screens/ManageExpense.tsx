@@ -18,6 +18,7 @@ import {
   updateExpense as updateExpenseHttp,
   deleteExpense as deleteExpenseHttp,
 } from '../util/http';
+import ErrorOverlay from '../components/UI/ErrorOverlay';
 
 const ManageExpense = ({
   route,
@@ -27,6 +28,7 @@ const ManageExpense = ({
   navigation?: AppNavigation;
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { expenses, addExpense, updateExpense, deleteExpense } =
     useContext(ExpensesContext);
@@ -41,13 +43,23 @@ const ManageExpense = ({
     return foundExpense;
   }, [expenses, editedExpenseId]);
 
+  const errorHandler = () => {
+    setError(null);
+  };
+
   const deleteExpenseHandler = async () => {
     if (editedExpenseId) {
       setIsSubmitting(true);
-      await deleteExpenseHttp(editedExpenseId);
-      deleteExpense(editedExpenseId);
+      try {
+        await deleteExpenseHttp(editedExpenseId);
+        deleteExpense(editedExpenseId);
+        navigation?.goBack();
+      } catch (_error) {
+        setError('Could not delete expense - please try again later');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
-    navigation?.goBack();
   };
 
   const cancelHandler = () => {
@@ -56,14 +68,20 @@ const ManageExpense = ({
 
   const submitHandler = async (expenseData: NewExpense) => {
     setIsSubmitting(true);
-    if (isEditing) {
-      updateExpense(editedExpenseId, { ...expenseData, id: editedExpenseId });
-      await updateExpenseHttp(editedExpenseId, expenseData);
-    } else {
-      const id = await storeExpense(expenseData);
-      addExpense({ ...expenseData, id });
+    try {
+      if (isEditing) {
+        updateExpense(editedExpenseId, { ...expenseData, id: editedExpenseId });
+        await updateExpenseHttp(editedExpenseId, expenseData);
+      } else {
+        const id = await storeExpense(expenseData);
+        addExpense({ ...expenseData, id });
+      }
+      navigation?.goBack();
+    } catch (_error) {
+      setError('Could not save expense - please try again later');
+    } finally {
+      setIsSubmitting(false);
     }
-    navigation?.goBack();
   };
 
   useLayoutEffect(() => {
@@ -71,6 +89,10 @@ const ManageExpense = ({
       title: isEditing ? 'Edit Expense' : 'Add Expense',
     });
   }, [isEditing, navigation]);
+
+  if (error && !isSubmitting) {
+    return <ErrorOverlay message={error} onConfirm={errorHandler} />;
+  }
 
   if (isSubmitting) {
     return <LoadingOverlay />;
