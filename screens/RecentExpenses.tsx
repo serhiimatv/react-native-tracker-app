@@ -4,7 +4,6 @@ import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
 import ErrorOverlay from '../components/UI/ErrorOverlay';
 import LoadingOverlay from '../components/UI/LoadingOverlay';
 import { ExpensesContext } from '../store/expenses-context';
-import { getDateMinusDays } from '../util/date';
 import { fetchExpenses } from '../util/http';
 
 const RecentExpenses = () => {
@@ -19,8 +18,14 @@ const RecentExpenses = () => {
   const recentExpenses = useMemo(() => {
     return expenses.filter(expense => {
       const today = new Date();
-      const date7DaysAgo = getDateMinusDays(today, 7);
-      return expense.date >= date7DaysAgo && expense.date <= today;
+      const todayOffset = today.getTimezoneOffset() * 60000;
+      const todayLocal = new Date(today.getTime() - todayOffset);
+      const date7DaysAgo = new Date(
+        todayLocal.getTime() - 7 * 24 * 60 * 60 * 1000,
+      );
+      const expenseOffset = expense.date.getTimezoneOffset() * 60000;
+      const expenseLocal = new Date(expense.date.getTime() - expenseOffset);
+      return expenseLocal >= date7DaysAgo && expense.date <= todayLocal;
     });
   }, [expenses]);
 
