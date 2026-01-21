@@ -24,9 +24,10 @@ const DatePicker = ({ value, invalid, style, onChange }: DatePickerProps) => {
   const [open, setOpen] = useState(false);
 
   const dateChangeHandler = (newDate: Date) => {
-    console.log('newDate', newDate.toISOString());
-    onChange(newDate.toISOString());
-    setDate(newDate);
+    const offsetMS = newDate.getTimezoneOffset() * 60000;
+    const localDate = new Date(newDate.getTime() - offsetMS);
+    onChange(localDate.toISOString());
+    setDate(localDate);
     setOpen(false);
   };
   return (
