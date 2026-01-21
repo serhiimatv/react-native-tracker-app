@@ -6,6 +6,7 @@ import Button from '../UI/Button';
 import { Expense, NewExpense } from '../../models/models';
 import { getFormattedDate } from '../../util/date';
 import { GlobalStyles } from '../../constants/styles';
+import DatePicker from './DatePicker';
 
 const inputValuesKeys = {
   amount: 'amount',
@@ -52,9 +53,13 @@ const ExpenseForm = ({
     }));
   };
 
+  const dateChangeHandler = (date: string) => {
+    inputsChangeHandler(inputValuesKeys.date, date);
+  };
+
   const submitHandler = () => {
     const expenseData = {
-      amount: Number(input.amount.value),
+      amount: Number(input.amount.value.replace(',', '.')),
       date: new Date(input.date.value),
       description: input.description.value,
     } satisfies NewExpense;
@@ -100,15 +105,11 @@ const ExpenseForm = ({
           onChangeText={inputsChangeHandler.bind(this, inputValuesKeys.amount)}
           invalid={!input.amount.isValid}
         />
-
-        <Input
-          style={styles.rowInput}
-          label="Date"
-          placeholder="YYYY-MM-DD"
-          maxLength={10}
+        <DatePicker
           value={input.date.value}
-          onChangeText={inputsChangeHandler.bind(this, inputValuesKeys.date)}
           invalid={!input.date.isValid}
+          style={styles.rowInput}
+          onChange={dateChangeHandler}
         />
       </View>
 
@@ -155,8 +156,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputsRow: {
+    height: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 12,
   },
   rowInput: {
     flex: 1,

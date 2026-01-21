@@ -1,5 +1,5 @@
 import { useContext, useLayoutEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 
 import IconButton from '../components/UI/IconButton';
@@ -98,7 +98,8 @@ const ManageExpense = ({
     return <LoadingOverlay />;
   }
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <KeyboardAvoidingView behavior='position' style={styles.screen}>
       <ExpenseForm
         defaultValues={selectedExpense}
         submitButtonLabel={isEditing ? 'Update' : 'Add'}
@@ -115,13 +116,17 @@ const ManageExpense = ({
           />
         </View>
       )}
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 };
 
 export default ManageExpense;
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 24,
